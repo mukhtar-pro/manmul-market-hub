@@ -1,10 +1,22 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+
+// Pages
+import Index from "@/pages/Index";
+import ProductsPage from "@/pages/products/Products";
+import ProductDetail from "@/pages/products/ProductDetail";
+import ShopsPage from "@/pages/shops/Shops";
+import ShopDetail from "@/pages/shops/ShopDetail";
+import HealthcarePage from "@/pages/healthcare/Healthcare";
+import CartPage from "@/pages/cart/Cart";
+import HistoryPage from "@/pages/history/History";
+import ProfilePage from "@/pages/profile/Profile";
+import SettingsPage from "@/pages/settings/Settings";
+import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +28,15 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/shops" element={<ShopsPage />} />
+          <Route path="/shops/:id" element={<ShopDetail />} />
+          <Route path="/healthcare" element={<HealthcarePage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

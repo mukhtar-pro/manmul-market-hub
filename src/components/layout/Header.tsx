@@ -1,0 +1,136 @@
+
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { 
+  Search, 
+  ShoppingCart, 
+  User,
+  Menu,
+  X,
+  LogOut
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  return (
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="manmul-container py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-manmul-600 rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-lg">M</span>
+            </div>
+            {!isMobile && (
+              <span className="text-xl font-bold text-gray-800">ManMulShop</span>
+            )}
+          </Link>
+
+          {/* Search bar - Hide on mobile */}
+          {!isMobile && (
+            <div className="flex-1 max-w-xl mx-4">
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Search products, shops, and more..."
+                  className="w-full py-2 pl-4 pr-12 bg-gray-100"
+                />
+                <Button 
+                  size="icon"
+                  variant="ghost" 
+                  className="absolute right-0 top-0 h-full"
+                >
+                  <Search size={18} />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Right side navigation */}
+          <div className="flex items-center space-x-2">
+            <Link to="/cart">
+              <Button variant="ghost" size="icon" className="relative">
+                <ShoppingCart size={20} />
+                <span className="absolute -top-1 -right-1 bg-manmul-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  0
+                </span>
+              </Button>
+            </Link>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <User size={20} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="w-full cursor-pointer">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/orders" className="w-full cursor-pointer">Order History</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" className="w-full cursor-pointer">Settings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <LogOut size={16} className="mr-2" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Mobile menu button */}
+            {isMobile && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile search bar - Only show on mobile */}
+        {isMobile && (
+          <div className="mt-3">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Search..."
+                className="w-full py-2 pl-4 pr-12 bg-gray-100"
+              />
+              <Button 
+                size="icon"
+                variant="ghost" 
+                className="absolute right-0 top-0 h-full"
+              >
+                <Search size={18} />
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Header;
