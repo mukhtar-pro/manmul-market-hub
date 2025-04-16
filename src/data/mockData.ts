@@ -142,3 +142,25 @@ export const shopFeedback = Array.from({ length: 15 }, (_, i) => ({
   ][Math.floor(Math.random() * 10)],
   date: new Date(Date.now() - Math.floor(Math.random() * 90) * 24 * 60 * 60 * 1000).toISOString(),
 }));
+
+// Add medicine feedback
+export const medicineFeedback = Array.from({ length: 15 }, (_, i) => ({
+  id: `medicine-feedback-${i + 1}`,
+  medicineId: `medicine-${Math.floor(Math.random() * 30) + 1}`,
+  userId: `user-${Math.floor(Math.random() * 10) + 1}`,
+  userName: ["Jane Smith", "John Doe", "Alice Johnson", "Bob Brown", "Charlie Davis"][Math.floor(Math.random() * 5)],
+  rating: Math.floor(Math.random() * 5) + 1,
+  comment: [
+    "This medication worked very well for me!",
+    "Great value for the price, helped with my symptoms.",
+    "Effective but had some minor side effects.",
+    "I've been using this for years, highly recommend.",
+    "Did not work as well as expected.",
+    "Fast relief, exactly as described.",
+    "Good medicine but the taste is unpleasant.",
+    "This helped my condition significantly.",
+    "Better than other similar medications I've tried.",
+    "Doctor recommended this and it's been excellent."
+  ][Math.floor(Math.random() * 10)],
+  date: new Date(Date.now() - Math.floor(Math.random() * 60) * 24 * 60 * 60 * 1000).toISOString(),
+}));

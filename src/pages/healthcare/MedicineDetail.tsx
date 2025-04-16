@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -50,8 +49,8 @@ const MedicineDetail = () => {
     );
   }
   
-  // Mock feedback for this medicine
-  const feedback = medicineFeedback?.filter(f => f.medicineId === id) || [];
+  // Get feedback for this medicine
+  const feedback = medicineFeedback.filter(f => f.medicineId === id);
   
   // Handle add to cart
   const handleAddToCart = () => {

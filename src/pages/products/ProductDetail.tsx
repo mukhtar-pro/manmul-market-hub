@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -49,8 +48,8 @@ const ProductDetail = () => {
     );
   }
   
-  // Filter feedback for this product
-  const feedback = productFeedback.filter(item => item.productId === id).slice(0, 5);
+  // Filter feedback for this product - use id instead of productId
+  const feedback = productFeedback.filter(item => item.id.includes(id || '')).slice(0, 5);
   
   // Handle add to cart
   const handleAddToCart = () => {
