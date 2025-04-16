@@ -1,338 +1,323 @@
 
-import { useState } from "react";
+import React, { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
   Palette, 
-  Mail, 
+  Type, 
   Bell, 
-  Lock, 
-  Save,
-  Check
+  Mail, 
+  Check,
+  Lock
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const SettingsPage = () => {
-  const [selectedTheme, setSelectedTheme] = useState("green");
-  const [selectedFont, setSelectedFont] = useState("roboto");
-  const [fontSize, setFontSize] = useState("medium");
+  const { theme, setThemeOption, saveTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState("appearance");
+  
+  // Notification settings
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [smsNotifications, setSmsNotifications] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const { toast } = useToast();
+  const [pushNotifications, setPushNotifications] = useState(true);
+  const [orderUpdates, setOrderUpdates] = useState(true);
+  const [marketingEmails, setMarketingEmails] = useState(false);
   
-  // Handle theme settings save
-  const handleSaveTheme = () => {
-    toast({
-      title: "Theme Settings Saved",
-      description: "Your appearance preferences have been updated.",
-      duration: 3000,
-    });
-  };
+  // Contact preferences
+  const [preferredContact, setPreferredContact] = useState("email");
+  const [contactEmail, setContactEmail] = useState("user@example.com");
+  const [contactPhone, setContactPhone] = useState("+1 555-123-4567");
   
-  // Handle notifications settings save
-  const handleSaveNotifications = () => {
-    toast({
-      title: "Notification Settings Saved",
-      description: "Your notification preferences have been updated.",
-      duration: 3000,
-    });
-  };
-  
-  // Handle password change
-  const handleChangePassword = () => {
-    if (!currentPassword) {
-      toast({
-        title: "Current Password Required",
-        description: "Please enter your current password.",
-        variant: "destructive",
-        duration: 3000,
-      });
-      return;
-    }
-    
-    if (!newPassword) {
-      toast({
-        title: "New Password Required",
-        description: "Please enter a new password.",
-        variant: "destructive",
-        duration: 3000,
-      });
-      return;
-    }
-    
-    if (newPassword !== confirmPassword) {
-      toast({
-        title: "Passwords Don't Match",
-        description: "New password and confirmation don't match.",
-        variant: "destructive",
-        duration: 3000,
-      });
-      return;
-    }
-    
-    toast({
-      title: "Password Updated",
-      description: "Your password has been changed successfully.",
-      duration: 3000,
-    });
-    
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-  };
-
   return (
     <MainLayout>
       <div className="manmul-container">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Settings</h1>
         
-        <Tabs defaultValue="appearance">
-          <TabsList className="grid grid-cols-3 mb-6">
+        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-3 md:grid-cols-4">
             <TabsTrigger value="appearance" className="flex items-center">
               <Palette size={16} className="mr-2" />
-              Appearance
+              <span>Appearance</span>
             </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center">
               <Bell size={16} className="mr-2" />
-              Notifications
+              <span>Notifications</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center">
+            <TabsTrigger value="contact" className="flex items-center">
+              <Mail size={16} className="mr-2" />
+              <span>Contact</span>
+            </TabsTrigger>
+            <TabsTrigger value="security" className="hidden md:flex items-center">
               <Lock size={16} className="mr-2" />
-              Security
+              <span>Security</span>
             </TabsTrigger>
           </TabsList>
           
-          {/* Appearance Settings */}
+          {/* Appearance Tab */}
           <TabsContent value="appearance">
             <Card>
-              <CardContent className="pt-6 pb-4">
-                <h3 className="text-lg font-medium mb-4">Theme Customizer</h3>
-                <Separator className="mb-6" />
+              <CardHeader>
+                <CardTitle>Appearance Settings</CardTitle>
+                <CardDescription>
+                  Customize how ManMulShop looks for you.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Theme Color */}
+                <div className="space-y-2">
+                  <Label htmlFor="theme-color">Theme Color</Label>
+                  <Select
+                    value={theme.color}
+                    onValueChange={(value) => setThemeOption('color', value)}
+                  >
+                    <SelectTrigger id="theme-color">
+                      <SelectValue placeholder="Select color" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="green">Green</SelectItem>
+                      <SelectItem value="blue">Blue</SelectItem>
+                      <SelectItem value="purple">Purple</SelectItem>
+                      <SelectItem value="red">Red</SelectItem>
+                      <SelectItem value="orange">Orange</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 
-                <div className="space-y-6">
-                  {/* Theme Color */}
-                  <div className="space-y-3">
-                    <Label>Theme Color</Label>
-                    <div className="flex flex-wrap gap-3">
-                      {[
-                        { value: "green", label: "Green", color: "bg-green-500" },
-                        { value: "blue", label: "Blue", color: "bg-blue-500" },
-                        { value: "purple", label: "Purple", color: "bg-purple-500" },
-                        { value: "red", label: "Red", color: "bg-red-500" },
-                        { value: "orange", label: "Orange", color: "bg-orange-500" },
-                      ].map((theme) => (
-                        <div 
-                          key={theme.value} 
-                          className="relative"
-                          onClick={() => setSelectedTheme(theme.value)}
-                        >
-                          <div 
-                            className={`w-12 h-12 rounded-full cursor-pointer ${theme.color} flex items-center justify-center`}
-                          >
-                            {selectedTheme === theme.value && (
-                              <Check size={20} className="text-white" />
-                            )}
-                          </div>
-                          <span className="block text-xs text-center mt-1">{theme.label}</span>
-                        </div>
-                      ))}
-                    </div>
+                {/* Font */}
+                <div className="space-y-2">
+                  <Label htmlFor="font">Font</Label>
+                  <Select
+                    value={theme.font}
+                    onValueChange={(value) => setThemeOption('font', value)}
+                  >
+                    <SelectTrigger id="font">
+                      <SelectValue placeholder="Select font" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Roboto">Roboto</SelectItem>
+                      <SelectItem value="Arial">Arial</SelectItem>
+                      <SelectItem value="Helvetica">Helvetica</SelectItem>
+                      <SelectItem value="Verdana">Verdana</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Font Size */}
+                <div className="space-y-2">
+                  <Label htmlFor="font-size">Font Size</Label>
+                  <Select
+                    value={theme.fontSize}
+                    onValueChange={(value) => setThemeOption('fontSize', value)}
+                  >
+                    <SelectTrigger id="font-size">
+                      <SelectValue placeholder="Select font size" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Small</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="large">Large</SelectItem>
+                      <SelectItem value="x-large">Extra Large</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Preview */}
+                <div className="bg-background p-4 rounded-md border">
+                  <h4 className="font-semibold mb-2">Preview</h4>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className={`w-6 h-6 rounded-full bg-primary`}></div>
+                    <span>Primary color sample</span>
                   </div>
-                  
-                  {/* Font Family */}
-                  <div className="space-y-3">
-                    <Label>Font Family</Label>
-                    <RadioGroup value={selectedFont} onValueChange={setSelectedFont}>
-                      <div className="flex flex-col space-y-2">
-                        {[
-                          { value: "roboto", label: "Roboto", className: "font-sans" },
-                          { value: "serif", label: "Serif", className: "font-serif" },
-                          { value: "mono", label: "Monospace", className: "font-mono" },
-                        ].map((font) => (
-                          <div key={font.value} className="flex items-center space-x-2">
-                            <RadioGroupItem value={font.value} id={`font-${font.value}`} />
-                            <Label htmlFor={`font-${font.value}`} className={font.className}>{font.label}</Label>
-                          </div>
-                        ))}
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  
-                  {/* Font Size */}
-                  <div className="space-y-3">
-                    <Label>Font Size</Label>
-                    <RadioGroup value={fontSize} onValueChange={setFontSize}>
-                      <div className="flex flex-col space-y-2">
-                        {[
-                          { value: "small", label: "Small" },
-                          { value: "medium", label: "Medium" },
-                          { value: "large", label: "Large" },
-                        ].map((size) => (
-                          <div key={size.value} className="flex items-center space-x-2">
-                            <RadioGroupItem value={size.value} id={`size-${size.value}`} />
-                            <Label 
-                              htmlFor={`size-${size.value}`} 
-                              className={size.value === "small" ? "text-sm" : size.value === "large" ? "text-lg" : ""}
-                            >
-                              {size.label}
-                            </Label>
-                          </div>
-                        ))}
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  
-                  <Button onClick={handleSaveTheme}>
-                    <Save size={16} className="mr-2" />
-                    Save Appearance Settings
-                  </Button>
+                  <p>This is how your text will appear with the selected options.</p>
                 </div>
               </CardContent>
+              <CardFooter>
+                <Button onClick={saveTheme}>
+                  <Check size={16} className="mr-2" />
+                  Save Appearance Settings
+                </Button>
+              </CardFooter>
             </Card>
           </TabsContent>
           
-          {/* Notification Settings */}
+          {/* Notifications Tab */}
           <TabsContent value="notifications">
             <Card>
-              <CardContent className="pt-6 pb-4">
-                <h3 className="text-lg font-medium mb-4">Notification Preferences</h3>
-                <Separator className="mb-6" />
+              <CardHeader>
+                <CardTitle>Notification Settings</CardTitle>
+                <CardDescription>
+                  Manage how you receive notifications from us.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="email-notifications" className="block mb-1">Email Notifications</Label>
+                    <p className="text-sm text-gray-500">Receive email updates about your account</p>
+                  </div>
+                  <Switch 
+                    id="email-notifications" 
+                    checked={emailNotifications}
+                    onCheckedChange={setEmailNotifications}
+                  />
+                </div>
                 
-                <div className="space-y-6">
-                  {/* Email Notifications */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Email Notifications</h4>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label htmlFor="email-orders">Order Updates</Label>
-                        <div className="text-sm text-gray-500">
-                          Receive notifications about your orders
-                        </div>
-                      </div>
-                      <Switch 
-                        id="email-orders" 
-                        checked={emailNotifications} 
-                        onCheckedChange={setEmailNotifications} 
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label htmlFor="email-promos">Promotions & Offers</Label>
-                        <div className="text-sm text-gray-500">
-                          Receive promotions, discounts, and special offers
-                        </div>
-                      </div>
-                      <Switch id="email-promos" defaultChecked={false} />
-                    </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="push-notifications" className="block mb-1">Push Notifications</Label>
+                    <p className="text-sm text-gray-500">Receive push notifications on your device</p>
                   </div>
-                  
-                  <Separator />
-                  
-                  {/* SMS Notifications */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium">SMS Notifications</h4>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label htmlFor="sms-orders">Order Updates</Label>
-                        <div className="text-sm text-gray-500">
-                          Receive SMS alerts about your orders
-                        </div>
-                      </div>
-                      <Switch 
-                        id="sms-orders" 
-                        checked={smsNotifications} 
-                        onCheckedChange={setSmsNotifications} 
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label htmlFor="sms-security">Security Alerts</Label>
-                        <div className="text-sm text-gray-500">
-                          Receive security notifications via SMS
-                        </div>
-                      </div>
-                      <Switch id="sms-security" defaultChecked={true} />
-                    </div>
+                  <Switch 
+                    id="push-notifications" 
+                    checked={pushNotifications}
+                    onCheckedChange={setPushNotifications}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="order-updates" className="block mb-1">Order Updates</Label>
+                    <p className="text-sm text-gray-500">Receive updates about your orders</p>
                   </div>
-                  
-                  <Button onClick={handleSaveNotifications}>
-                    <Save size={16} className="mr-2" />
-                    Save Notification Settings
-                  </Button>
+                  <Switch 
+                    id="order-updates" 
+                    checked={orderUpdates}
+                    onCheckedChange={setOrderUpdates}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="marketing-emails" className="block mb-1">Marketing Emails</Label>
+                    <p className="text-sm text-gray-500">Receive promotional offers and newsletters</p>
+                  </div>
+                  <Switch 
+                    id="marketing-emails" 
+                    checked={marketingEmails}
+                    onCheckedChange={setMarketingEmails}
+                  />
                 </div>
               </CardContent>
+              <CardFooter>
+                <Button>
+                  <Check size={16} className="mr-2" />
+                  Save Notification Settings
+                </Button>
+              </CardFooter>
             </Card>
           </TabsContent>
           
-          {/* Security Settings */}
-          <TabsContent value="security">
+          {/* Contact Tab */}
+          <TabsContent value="contact">
             <Card>
-              <CardContent className="pt-6 pb-4">
-                <h3 className="text-lg font-medium mb-4">Change Password</h3>
-                <Separator className="mb-6" />
+              <CardHeader>
+                <CardTitle>Contact Preferences</CardTitle>
+                <CardDescription>
+                  Set your preferred contact methods for communications.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="preferred-contact">Preferred Contact Method</Label>
+                  <Select
+                    value={preferredContact}
+                    onValueChange={setPreferredContact}
+                  >
+                    <SelectTrigger id="preferred-contact">
+                      <SelectValue placeholder="Select contact method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="email">Email</SelectItem>
+                      <SelectItem value="phone">Phone</SelectItem>
+                      <SelectItem value="both">Both Email and Phone</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="current-password">Current Password</Label>
-                    <Input 
-                      id="current-password" 
-                      type="password" 
-                      placeholder="Enter current password" 
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
-                    <Input 
-                      id="new-password" 
-                      type="password" 
-                      placeholder="Enter new password" 
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm New Password</Label>
-                    <Input 
-                      id="confirm-password" 
-                      type="password" 
-                      placeholder="Confirm new password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                  </div>
-                  
-                  <Button onClick={handleChangePassword}>
-                    <Lock size={16} className="mr-2" />
-                    Update Password
-                  </Button>
+                <div className="space-y-2">
+                  <Label htmlFor="contact-email">Contact Email</Label>
+                  <Input 
+                    id="contact-email" 
+                    value={contactEmail} 
+                    onChange={(e) => setContactEmail(e.target.value)} 
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="contact-phone">Contact Phone</Label>
+                  <Input 
+                    id="contact-phone" 
+                    value={contactPhone} 
+                    onChange={(e) => setContactPhone(e.target.value)} 
+                  />
                 </div>
               </CardContent>
+              <CardFooter>
+                <Button>
+                  <Check size={16} className="mr-2" />
+                  Save Contact Settings
+                </Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          
+          {/* Security Tab */}
+          <TabsContent value="security">
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Settings</CardTitle>
+                <CardDescription>
+                  Manage your account security preferences.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="current-password">Current Password</Label>
+                  <Input id="current-password" type="password" />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <Input id="new-password" type="password" />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">Confirm New Password</Label>
+                  <Input id="confirm-password" type="password" />
+                </div>
+                
+                <div className="flex items-center justify-between pt-4">
+                  <div>
+                    <Label htmlFor="two-factor" className="block mb-1">Two-Factor Authentication</Label>
+                    <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
+                  </div>
+                  <Switch id="two-factor" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>
+                  <Check size={16} className="mr-2" />
+                  Update Password
+                </Button>
+              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>

@@ -20,10 +20,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useCart } from "@/contexts/CartContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { getTotalItems } = useCart();
+  const cartItemCount = getTotalItems();
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -31,8 +34,12 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-manmul-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/63051921-1b43-4498-97a1-524eec3adbb8.png" 
+                alt="ManMulShop Logo" 
+                className="w-full h-full object-contain"
+              />
             </div>
             {!isMobile && (
               <span className="text-xl font-bold text-gray-800">ManMulShop</span>
@@ -64,9 +71,11 @@ const Header = () => {
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart size={20} />
-                <span className="absolute -top-1 -right-1 bg-manmul-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  0
-                </span>
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-manmul-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
+                  </span>
+                )}
               </Button>
             </Link>
             

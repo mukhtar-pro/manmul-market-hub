@@ -22,11 +22,31 @@ import {
 } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const FilterBar = () => {
-  const [sortBy, setSortBy] = useState("featured");
-  const [priceRange, setPriceRange] = useState("all");
-  const [rating, setRating] = useState("all");
+export interface FilterOptions {
+  sortBy: string;
+  priceRange: string;
+  rating: string;
+}
+
+interface FilterBarProps {
+  filters: FilterOptions;
+  onFilterChange: (key: keyof FilterOptions, value: string) => void;
+}
+
+const FilterBar = ({ filters, onFilterChange }: FilterBarProps) => {
   const isMobile = useIsMobile();
+
+  const handleSortChange = (value: string) => {
+    onFilterChange('sortBy', value);
+  };
+
+  const handlePriceRangeChange = (value: string) => {
+    onFilterChange('priceRange', value);
+  };
+
+  const handleRatingChange = (value: string) => {
+    onFilterChange('rating', value);
+  };
 
   return (
     <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col sm:flex-row items-center justify-between mb-4 border">
@@ -37,7 +57,7 @@ const FilterBar = () => {
 
       <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
         {/* Sort By Filter */}
-        <Select value={sortBy} onValueChange={setSortBy}>
+        <Select value={filters.sortBy} onValueChange={handleSortChange}>
           <SelectTrigger className="w-full sm:w-40 h-9 text-sm">
             <SelectValue placeholder="Sort By" />
           </SelectTrigger>
@@ -64,7 +84,7 @@ const FilterBar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
-              <DropdownMenuRadioGroup value={priceRange} onValueChange={setPriceRange}>
+              <DropdownMenuRadioGroup value={filters.priceRange} onValueChange={handlePriceRangeChange}>
                 <DropdownMenuRadioItem value="all">All Prices</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="under25">Under $25</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="25to50">$25 to $50</DropdownMenuRadioItem>
@@ -74,7 +94,7 @@ const FilterBar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Select value={priceRange} onValueChange={setPriceRange}>
+          <Select value={filters.priceRange} onValueChange={handlePriceRangeChange}>
             <SelectTrigger className="w-40 h-9 text-sm">
               <SelectValue placeholder="Price Range" />
             </SelectTrigger>
@@ -102,7 +122,7 @@ const FilterBar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
-              <DropdownMenuRadioGroup value={rating} onValueChange={setRating}>
+              <DropdownMenuRadioGroup value={filters.rating} onValueChange={handleRatingChange}>
                 <DropdownMenuRadioItem value="all">All Ratings</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="4plus">4+ Stars</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="3plus">3+ Stars</DropdownMenuRadioItem>
@@ -112,7 +132,7 @@ const FilterBar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Select value={rating} onValueChange={setRating}>
+          <Select value={filters.rating} onValueChange={handleRatingChange}>
             <SelectTrigger className="w-40 h-9 text-sm">
               <SelectValue placeholder="Rating" />
             </SelectTrigger>

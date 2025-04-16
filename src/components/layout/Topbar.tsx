@@ -11,20 +11,22 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useCart } from "@/contexts/CartContext";
 
 interface TopbarItemProps {
   to: string;
   icon: React.ReactNode;
   label: string;
   isActive: boolean;
+  badgeCount?: number;
 }
 
-const TopbarItem = ({ to, icon, label, isActive }: TopbarItemProps) => {
+const TopbarItem = ({ to, icon, label, isActive, badgeCount }: TopbarItemProps) => {
   return (
     <Link 
       to={to}
       className={cn(
-        "flex flex-col items-center px-4 py-2 text-sm font-medium transition-colors",
+        "flex flex-col items-center px-4 py-2 text-sm font-medium transition-colors relative",
         isActive 
           ? "text-manmul-600 border-b-2 border-manmul-600" 
           : "text-gray-600 hover:text-manmul-500"
@@ -32,6 +34,12 @@ const TopbarItem = ({ to, icon, label, isActive }: TopbarItemProps) => {
     >
       {icon}
       <span className="mt-1">{label}</span>
+      
+      {badgeCount !== undefined && badgeCount > 0 && (
+        <span className="absolute -top-1 -right-1 bg-manmul-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          {badgeCount > 99 ? '99+' : badgeCount}
+        </span>
+      )}
     </Link>
   );
 };
@@ -39,6 +47,8 @@ const TopbarItem = ({ to, icon, label, isActive }: TopbarItemProps) => {
 const Topbar = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { getTotalItems } = useCart();
+  const cartItemCount = getTotalItems();
   
   const isActive = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
@@ -69,7 +79,8 @@ const Topbar = () => {
     { 
       to: "/cart", 
       icon: <ShoppingCart size={isMobile ? 18 : 20} />, 
-      label: "Cart" 
+      label: "Cart",
+      badgeCount: cartItemCount
     },
     { 
       to: "/settings", 
@@ -94,6 +105,7 @@ const Topbar = () => {
               icon={item.icon}
               label={item.label}
               isActive={isActive(item.to)}
+              badgeCount={item.badgeCount}
             />
           ))}
         </div>

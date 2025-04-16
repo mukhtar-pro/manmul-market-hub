@@ -13,13 +13,12 @@ import {
   ChevronLeft 
 } from "lucide-react";
 import { products, productFeedback } from "@/data/mockData";
-import { useToast } from "@/components/ui/use-toast";
+import { useCart } from "@/contexts/CartContext";
 import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -27,7 +26,7 @@ import {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [quantity, setQuantity] = useState(1);
-  const { toast } = useToast();
+  const { addItem } = useCart();
   
   // Find the product by id
   const product = products.find(p => p.id === id);
@@ -51,15 +50,17 @@ const ProductDetail = () => {
   }
   
   // Filter feedback for this product
-  const feedback = productFeedback.slice(0, 5); // Just showing 5 feedback items
+  const feedback = productFeedback.filter(item => item.productId === id).slice(0, 5);
   
   // Handle add to cart
   const handleAddToCart = () => {
-    toast({
-      title: "Added to cart",
-      description: `${quantity} ${quantity > 1 ? 'items' : 'item'} added to your cart`,
-      duration: 3000,
-    });
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      type: 'product'
+    }, quantity);
   };
   
   // Handle quantity change

@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { orders } from "@/data/mockData";
 import { 
@@ -19,9 +20,9 @@ import {
   Clock,
   XCircle
 } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import Pagination from "@/components/common/Pagination";
 
 type OrderStatus = "Delivered" | "Shipped" | "Processing" | "Cancelled";
 
@@ -66,6 +67,13 @@ const getStatusBadge = (status: OrderStatus) => {
 
 const HistoryPage = () => {
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 5;
+  
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
   
   const toggleOrderExpand = (orderId: string) => {
     if (expandedOrder === orderId) {
@@ -82,6 +90,11 @@ const HistoryPage = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setExpandedOrder(null); // Reset expanded order when changing page
   };
 
   return (
@@ -102,7 +115,7 @@ const HistoryPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
+                {currentOrders.map((order) => (
                   <>
                     <TableRow key={order.id}>
                       <TableCell className="font-medium">#{order.id.split('-')[1]}</TableCell>
@@ -161,6 +174,15 @@ const HistoryPage = () => {
                 ))}
               </TableBody>
             </Table>
+            
+            {/* Pagination */}
+            <div className="p-4 border-t">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border p-12 text-center">

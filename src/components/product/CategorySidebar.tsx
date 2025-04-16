@@ -29,6 +29,11 @@ interface CategoryItemProps {
   selectedCategory: string | null;
 }
 
+interface CategorySidebarProps {
+  selectedCategory: string | null;
+  onSelectCategory: (categoryId: string) => void;
+}
+
 const CategoryItem = ({ 
   category, 
   level = 0, 
@@ -96,9 +101,7 @@ const CategoryItem = ({
   );
 };
 
-const CategorySidebar = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
+const CategorySidebar = ({ selectedCategory, onSelectCategory }: CategorySidebarProps) => {
   // Mock category data
   const categories: Category[] = [
     {
@@ -164,7 +167,7 @@ const CategorySidebar = () => {
   ];
 
   const handleSelectCategory = (categoryId: string) => {
-    setSelectedCategory(categoryId);
+    onSelectCategory(categoryId);
   };
 
   return (
