@@ -10,8 +10,12 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <Link to="/" className="flex items-center">
-              <div className="w-8 h-8 bg-manmul-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
+              <div className="w-12 h-12 flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/845c676e-9a0a-4fd5-81e1-0fe046b78a3a.png" 
+                  alt="ManMulShop Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="ml-2 text-lg font-semibold text-gray-800">
                 ManMulShop

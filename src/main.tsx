@@ -39,6 +39,9 @@ window.addEventListener('error', function(e) {
       // General fallback for any other images
       img.src = 'https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?q=80&w=2070&auto=format&fit=crop';
     }
+    
+    // Prevent the error from being logged to the console
+    e.preventDefault();
   }
 }, true);
 

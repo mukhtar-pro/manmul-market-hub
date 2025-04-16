@@ -14,12 +14,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Filter } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
 
 const HealthcarePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const medicinesPerPage = 9;
+  
+  const { addItem } = useCart();
   
   // Get unique categories
   const categories = Array.from(new Set(medicines.map(medicine => medicine.category)));
@@ -56,6 +59,20 @@ const HealthcarePage = () => {
     e.preventDefault();
     // Search is already handled by the filter above
     setCurrentPage(1); // Reset to first page when searching
+  };
+
+  // Handle add to cart
+  const handleAddToCart = (medicine: any) => {
+    addItem(
+      {
+        id: medicine.id,
+        name: medicine.name,
+        price: medicine.price,
+        image: medicine.image,
+        type: 'medicine'
+      },
+      1
+    );
   };
 
   return (
@@ -123,6 +140,7 @@ const HealthcarePage = () => {
               description={medicine.description}
               inStock={medicine.inStock}
               requiresPrescription={medicine.requiresPrescription}
+              onAddToCart={() => handleAddToCart(medicine)}
             />
           ))}
         </div>
@@ -141,6 +159,7 @@ const HealthcarePage = () => {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
+            totalItems={filteredMedicines.length}
           />
         )}
       </div>

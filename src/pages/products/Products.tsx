@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import CategorySidebar from "@/components/product/CategorySidebar";
@@ -22,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCart } from "@/contexts/CartContext";
 
 const ProductsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,8 +35,10 @@ const ProductsPage = () => {
   });
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
   
   const isMobile = useIsMobile();
+  const { addItem } = useCart();
   
   const filterByCategory = (products: any[]) => {
     if (!selectedCategory) return products;
@@ -83,6 +87,33 @@ const ProductsPage = () => {
     }
   };
   
+  const filterByAvailability = (products: any[]) => {
+    if (!filters.availability || filters.availability === 'all') return products;
+    return products.filter(product => {
+      if (filters.availability === 'in-stock') return product.inStock !== false;
+      if (filters.availability === 'out-of-stock') return product.inStock === false;
+      return true;
+    });
+  };
+  
+  const filterByBrand = (products: any[]) => {
+    if (!filters.brand || !filters.brand.length) return products;
+    return products.filter(product => 
+      filters.brand!.includes(product.brand || '')
+    );
+  };
+  
+  const filterByPriceMinMax = (products: any[]) => {
+    if (filters.minPrice === undefined && filters.maxPrice === undefined) return products;
+    
+    return products.filter(product => {
+      const price = product.price;
+      const minOk = filters.minPrice === undefined || price >= filters.minPrice;
+      const maxOk = filters.maxPrice === undefined || price <= filters.maxPrice;
+      return minOk && maxOk;
+    });
+  };
+  
   const sortProducts = (products: any[]) => {
     switch (filters.sortBy) {
       case "price-low":
@@ -98,13 +129,23 @@ const ProductsPage = () => {
     }
   };
   
-  const filteredProducts = sortProducts(
-    filterByRating(
-      filterByPriceRange(
-        filterByCategory(products)
+  const applyAllFilters = () => {
+    return sortProducts(
+      filterByPriceMinMax(
+        filterByBrand(
+          filterByAvailability(
+            filterByRating(
+              filterByPriceRange(
+                filterByCategory(products)
+              )
+            )
+          )
+        )
       )
-    )
-  );
+    );
+  };
+  
+  const filteredProducts = applyAllFilters();
   
   const indexOfLastProduct = currentPage * itemsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
@@ -121,23 +162,108 @@ const ProductsPage = () => {
     setCurrentPage(1);
   };
   
-  const handleFilterChange = (key: keyof FilterOptions, value: string) => {
+  const handleFilterChange = (key: keyof FilterOptions, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setCurrentPage(1);
+    
+    // Update active filters
+    updateActiveFilters({ ...filters, [key]: value });
+  };
+  
+  const updateActiveFilters = (newFilters: FilterOptions) => {
+    const activeFiltersList: string[] = [];
+    
+    if (newFilters.sortBy !== 'featured') {
+      const sortLabels: Record<string, string> = {
+        'price-low': 'Price: Low to High',
+        'price-high': 'Price: High to Low',
+        'rating': 'Highest Rated',
+        'newest': 'Newest First'
+      };
+      activeFiltersList.push(`Sort: ${sortLabels[newFilters.sortBy] || newFilters.sortBy}`);
+    }
+    
+    if (newFilters.priceRange !== 'all') {
+      const priceLabels: Record<string, string> = {
+        'under25': 'Under $25',
+        '25to50': '$25 to $50',
+        '50to100': '$50 to $100',
+        'over100': 'Over $100'
+      };
+      activeFiltersList.push(`Price: ${priceLabels[newFilters.priceRange]}`);
+    }
+    
+    if (newFilters.rating !== 'all') {
+      const ratingLabels: Record<string, string> = {
+        '4plus': '4+ Stars',
+        '3plus': '3+ Stars',
+        '2plus': '2+ Stars',
+        '1plus': '1+ Stars'
+      };
+      activeFiltersList.push(`Rating: ${ratingLabels[newFilters.rating]}`);
+    }
+    
+    if (newFilters.availability && newFilters.availability !== 'all') {
+      activeFiltersList.push(`Availability: ${newFilters.availability === 'in-stock' ? 'In Stock' : 'Out of Stock'}`);
+    }
+    
+    if (newFilters.brand && newFilters.brand.length) {
+      activeFiltersList.push(`Brands: ${newFilters.brand.join(', ')}`);
+    }
+    
+    if (newFilters.minPrice !== undefined || newFilters.maxPrice !== undefined) {
+      const minPrice = newFilters.minPrice !== undefined ? `$${newFilters.minPrice}` : '$0';
+      const maxPrice = newFilters.maxPrice !== undefined ? `$${newFilters.maxPrice}` : 'any';
+      activeFiltersList.push(`Price Range: ${minPrice} - ${maxPrice}`);
+    }
+    
+    setActiveFilters(activeFiltersList);
   };
 
-  const handleItemsPerPageChange = (value: string) => {
-    setItemsPerPage(Number(value));
+  const handleRemoveFilter = (filter: string) => {
+    // Parse the filter string to determine what to reset
+    if (filter.startsWith('Sort:')) {
+      handleFilterChange('sortBy', 'featured');
+    } else if (filter.startsWith('Price:') && !filter.startsWith('Price Range:')) {
+      handleFilterChange('priceRange', 'all');
+    } else if (filter.startsWith('Rating:')) {
+      handleFilterChange('rating', 'all');
+    } else if (filter.startsWith('Availability:')) {
+      handleFilterChange('availability', 'all');
+    } else if (filter.startsWith('Brands:')) {
+      handleFilterChange('brand', []);
+    } else if (filter.startsWith('Price Range:')) {
+      handleFilterChange('minPrice', undefined);
+      handleFilterChange('maxPrice', undefined);
+    }
+  };
+
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
     setCurrentPage(1);
   };
   
   const handleMoreFiltersClick = () => {
     setMoreFiltersOpen(!moreFiltersOpen);
   };
+
+  const handleAddToCart = (product: any) => {
+    addItem(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        type: 'product'
+      },
+      1
+    );
+  };
   
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, filters, itemsPerPage]);
+    updateActiveFilters(filters);
+  }, [selectedCategory, filters.sortBy, filters.priceRange, filters.rating]);
 
   return (
     <MainLayout>
@@ -181,7 +307,10 @@ const ProductsPage = () => {
             <FilterBar 
               filters={filters}
               onFilterChange={handleFilterChange}
+              activeFilters={activeFilters}
+              onRemoveFilter={handleRemoveFilter}
               onMoreFiltersClick={handleMoreFiltersClick}
+              showMoreFiltersInline={false}
             />
             
             {moreFiltersOpen && (
@@ -191,7 +320,16 @@ const ProductsPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Brand</label>
-                    <Select>
+                    <Select
+                      value={filters.brand && filters.brand.length === 1 ? filters.brand[0] : ""}
+                      onValueChange={(value) => {
+                        if (value === "all") {
+                          handleFilterChange('brand', []);
+                        } else {
+                          handleFilterChange('brand', [value]);
+                        }
+                      }}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="All Brands" />
                       </SelectTrigger>
@@ -201,48 +339,24 @@ const ProductsPage = () => {
                         <SelectItem value="apple">Apple</SelectItem>
                         <SelectItem value="sony">Sony</SelectItem>
                         <SelectItem value="lg">LG</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Condition</label>
-                    <Select>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Any Condition" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Any Condition</SelectItem>
-                        <SelectItem value="new">New</SelectItem>
-                        <SelectItem value="used">Used</SelectItem>
-                        <SelectItem value="refurbished">Refurbished</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Shipping</label>
-                    <Select>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="All Options" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Options</SelectItem>
-                        <SelectItem value="free">Free Shipping</SelectItem>
-                        <SelectItem value="express">Express Shipping</SelectItem>
-                        <SelectItem value="local">Local Pickup</SelectItem>
+                        <SelectItem value="dell">Dell</SelectItem>
+                        <SelectItem value="hp">HP</SelectItem>
+                        <SelectItem value="lenovo">Lenovo</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">Availability</label>
-                    <Select>
+                    <Select
+                      value={filters.availability || "all"}
+                      onValueChange={(value) => handleFilterChange('availability', value)}
+                    >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Any" />
+                        <SelectValue placeholder="Any Condition" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Any</SelectItem>
+                        <SelectItem value="all">Any Availability</SelectItem>
                         <SelectItem value="in-stock">In Stock</SelectItem>
                         <SelectItem value="out-of-stock">Out of Stock</SelectItem>
                       </SelectContent>
@@ -276,6 +390,7 @@ const ProductsPage = () => {
                     price={product.price}
                     rating={Number(product.rating)}
                     upvotes={product.upvotes}
+                    onAddToCart={() => handleAddToCart(product)}
                   />
                 ))}
               </div>
@@ -292,6 +407,7 @@ const ProductsPage = () => {
                       priceRange: "all",
                       rating: "all"
                     });
+                    setActiveFilters([]);
                   }}
                 >
                   Reset Filters
@@ -300,34 +416,15 @@ const ProductsPage = () => {
             )}
             
             {filteredProducts.length > 0 && (
-              <div className="mt-6">
-                <div className="flex flex-col sm:flex-row justify-between items-center mb-2">
-                  <div className="flex items-center mb-4 sm:mb-0">
-                    <span className="text-sm text-gray-600 mr-2">Items per page:</span>
-                    <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
-                      <SelectTrigger className="w-16">
-                        <SelectValue placeholder="12" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="6">6</SelectItem>
-                        <SelectItem value="12">12</SelectItem>
-                        <SelectItem value="24">24</SelectItem>
-                        <SelectItem value="48">48</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="text-sm text-gray-600">
-                    Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} products
-                  </div>
-                </div>
-                
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                itemsPerPage={itemsPerPage}
+                onItemsPerPageChange={handleItemsPerPageChange}
+                itemsPerPageOptions={[6, 12, 24, 48]}
+                totalItems={filteredProducts.length}
+              />
             )}
           </div>
         </div>

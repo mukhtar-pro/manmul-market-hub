@@ -77,35 +77,8 @@ const Pagination = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-      {/* Items per page selector - conditionally rendered */}
-      {itemsPerPage && onItemsPerPageChange && (
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600">Items per page:</span>
-          <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
-            <SelectTrigger className="w-[70px] h-8">
-              <SelectValue placeholder={String(itemsPerPage)} />
-            </SelectTrigger>
-            <SelectContent>
-              {itemsPerPageOptions.map(option => (
-                <SelectItem key={option} value={String(option)}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-      
-      {/* Showing X-Y of Z items - conditionally rendered */}
-      {totalItems !== undefined && itemsPerPage && (
-        <div className="text-sm text-gray-600">
-          Showing {Math.min((currentPage - 1) * itemsPerPage + 1, totalItems)}-
-          {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} items
-        </div>
-      )}
-      
-      {/* Page buttons */}
+    <div className="flex flex-col items-center space-y-4 mt-8 w-full">
+      {/* Page buttons - centered */}
       <div className="flex justify-center items-center space-x-1">
         <Button
           variant="outline"
@@ -143,6 +116,36 @@ const Pagination = ({
           <ChevronRight size={16} />
         </Button>
       </div>
+      
+      {/* Items per page selector & showing X-Y of Z - positioned below the pagination */}
+      {(itemsPerPage && onItemsPerPageChange) || totalItems !== undefined ? (
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+          {itemsPerPage && onItemsPerPageChange && (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Items per page:</span>
+              <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
+                <SelectTrigger className="w-[70px] h-8">
+                  <SelectValue placeholder={String(itemsPerPage)} />
+                </SelectTrigger>
+                <SelectContent>
+                  {itemsPerPageOptions.map(option => (
+                    <SelectItem key={option} value={String(option)}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          
+          {totalItems !== undefined && itemsPerPage && (
+            <div className="text-sm text-gray-600">
+              Showing {Math.min((currentPage - 1) * itemsPerPage + 1, totalItems)}-
+              {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} items
+            </div>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 };

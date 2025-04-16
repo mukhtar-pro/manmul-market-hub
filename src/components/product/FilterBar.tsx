@@ -50,6 +50,7 @@ interface FilterBarProps {
   activeFilters?: string[];
   onRemoveFilter?: (filter: string) => void;
   onMoreFiltersClick?: () => void;
+  showMoreFiltersInline?: boolean;
 }
 
 const FilterBar = ({ 
@@ -57,7 +58,8 @@ const FilterBar = ({
   onFilterChange, 
   activeFilters = [],
   onRemoveFilter = () => {},
-  onMoreFiltersClick
+  onMoreFiltersClick,
+  showMoreFiltersInline = false
 }: FilterBarProps) => {
   const isMobile = useIsMobile();
   const [brandOptions, setBrandOptions] = useState<string[]>(filters.brand || []);
@@ -65,6 +67,7 @@ const FilterBar = ({
     filters.minPrice || 0,
     filters.maxPrice || 1000
   ]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleSortChange = (value: string) => {
     onFilterChange('sortBy', value);
@@ -105,6 +108,18 @@ const FilterBar = ({
 
   const formatPrice = (value: number) => {
     return `$${value}`;
+  };
+  
+  const handleMoreFiltersClick = () => {
+    if (showMoreFiltersInline) {
+      if (onMoreFiltersClick) onMoreFiltersClick();
+    } else {
+      setIsDialogOpen(true);
+    }
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
   };
 
   return (
@@ -206,100 +221,102 @@ const FilterBar = ({
             </Select>
           )}
 
+          {/* Advanced Filters Button */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-9"
+            onClick={handleMoreFiltersClick}
+          >
+            <SlidersHorizontal size={16} className="mr-2" />
+            <span className="text-sm">More Filters</span>
+          </Button>
+          
           {/* Advanced Filters Dialog */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-9"
-                onClick={() => onMoreFiltersClick && onMoreFiltersClick()}
-              >
-                <SlidersHorizontal size={16} className="mr-2" />
-                <span className="text-sm">More Filters</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Advanced Filters</DialogTitle>
-              </DialogHeader>
-              
-              <div className="py-4 space-y-6">
-                {/* Availability Filter */}
-                <div>
-                  <h4 className="text-sm font-medium mb-3">Availability</h4>
-                  <Select value={filters.availability || 'all'} onValueChange={handleAvailabilityChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="All Items" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Items</SelectItem>
-                      <SelectItem value="in-stock">In Stock</SelectItem>
-                      <SelectItem value="out-of-stock">Out of Stock</SelectItem>
-                    </SelectContent>
-                  </Select>
+          {!showMoreFiltersInline && (
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Advanced Filters</DialogTitle>
+                </DialogHeader>
+                
+                <div className="py-4 space-y-6">
+                  {/* Availability Filter */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-3">Availability</h4>
+                    <Select value={filters.availability || 'all'} onValueChange={handleAvailabilityChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="All Items" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Items</SelectItem>
+                        <SelectItem value="in-stock">In Stock</SelectItem>
+                        <SelectItem value="out-of-stock">Out of Stock</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {/* Custom Price Range Slider */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-3">Price Range</h4>
+                    <Slider
+                      defaultValue={priceRange}
+                      max={1000}
+                      step={5}
+                      onValueChange={handleSliderChange}
+                      className="mb-6"
+                    />
+                    <div className="flex justify-between">
+                      <span>{formatPrice(priceRange[0])}</span>
+                      <span>{formatPrice(priceRange[1])}</span>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-2 w-full"
+                      onClick={handleApplyPriceRange}
+                    >
+                      Apply Price Range
+                    </Button>
+                  </div>
+                  
+                  {/* Brand Filters */}
+                  <div>
+                    <h4 className="text-sm font-medium mb-3">Brands</h4>
+                    <div className="space-y-2 max-h-40 overflow-y-auto pr-2">
+                      {['Apple', 'Samsung', 'Sony', 'LG', 'Asus', 'Dell', 'HP', 'Lenovo'].map((brand) => (
+                        <div key={brand} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`brand-${brand}`} 
+                            checked={brandOptions.includes(brand)}
+                            onCheckedChange={() => handleBrandToggle(brand)}
+                          />
+                          <label 
+                            htmlFor={`brand-${brand}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {brand}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-3 w-full"
+                      onClick={handleApplyBrands}
+                    >
+                      Apply Brand Filters
+                    </Button>
+                  </div>
                 </div>
                 
-                {/* Custom Price Range Slider */}
-                <div>
-                  <h4 className="text-sm font-medium mb-3">Price Range</h4>
-                  <Slider
-                    defaultValue={priceRange}
-                    max={1000}
-                    step={5}
-                    onValueChange={handleSliderChange}
-                    className="mb-6"
-                  />
-                  <div className="flex justify-between">
-                    <span>{formatPrice(priceRange[0])}</span>
-                    <span>{formatPrice(priceRange[1])}</span>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="mt-2 w-full"
-                    onClick={handleApplyPriceRange}
-                  >
-                    Apply Price Range
-                  </Button>
-                </div>
-                
-                {/* Brand Filters */}
-                <div>
-                  <h4 className="text-sm font-medium mb-3">Brands</h4>
-                  <div className="space-y-2 max-h-40 overflow-y-auto pr-2">
-                    {['Apple', 'Samsung', 'Sony', 'LG', 'Asus', 'Dell', 'HP', 'Lenovo'].map((brand) => (
-                      <div key={brand} className="flex items-center space-x-2">
-                        <Checkbox 
-                          id={`brand-${brand}`} 
-                          checked={brandOptions.includes(brand)}
-                          onCheckedChange={() => handleBrandToggle(brand)}
-                        />
-                        <label 
-                          htmlFor={`brand-${brand}`}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {brand}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="mt-3 w-full"
-                    onClick={handleApplyBrands}
-                  >
-                    Apply Brand Filters
-                  </Button>
-                </div>
-              </div>
-              
-              <DialogClose asChild>
-                <Button className="w-full mt-2">Done</Button>
-              </DialogClose>
-            </DialogContent>
-          </Dialog>
+                <DialogClose asChild>
+                  <Button className="w-full mt-2" onClick={handleDialogClose}>Done</Button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
       
