@@ -16,6 +16,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ProductsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,14 +32,29 @@ const ProductsPage = () => {
     priceRange: "all",
     rating: "all"
   });
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
   
   const isMobile = useIsMobile();
-  const productsPerPage = 12;
   
   // Filter products by category
   const filterByCategory = (products: any[]) => {
     if (!selectedCategory) return products;
-    return products.filter(product => product.category === selectedCategory);
+    return products.filter(product => {
+      // Check if the product's category matches the selectedCategory or if it's a parent category
+      if (product.category === selectedCategory) return true;
+      
+      // This is a simplified approach; in a real app, you'd have a proper category hierarchy
+      const parentCategories: Record<string, string[]> = {
+        "Electronics": ["smartphones", "laptops", "audio"],
+        "Fashion": ["men", "women", "kids"],
+        "Home": ["furniture", "kitchen", "decor"],
+      };
+      
+      return Object.entries(parentCategories).some(([parent, children]) => {
+        return (parent === product.category && children.includes(selectedCategory));
+      });
+    });
   };
   
   // Filter products by price range
@@ -93,10 +115,10 @@ const ProductsPage = () => {
   );
   
   // Calculate products for the current page
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   // Handle page change
   const handlePageChange = (pageNumber: number) => {
@@ -115,11 +137,22 @@ const ProductsPage = () => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setCurrentPage(1); // Reset to first page when changing filters
   };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+  
+  // Handle more filters click
+  const handleMoreFiltersClick = () => {
+    setMoreFiltersOpen(!moreFiltersOpen);
+  };
   
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, filters]);
+  }, [selectedCategory, filters, itemsPerPage]);
 
   return (
     <MainLayout>
@@ -166,7 +199,90 @@ const ProductsPage = () => {
             <FilterBar 
               filters={filters}
               onFilterChange={handleFilterChange}
+              onMoreFiltersClick={handleMoreFiltersClick}
             />
+            
+            {/* Advanced Filters Dialog - Only shown when More Filters is clicked */}
+            {moreFiltersOpen && (
+              <div className="bg-white p-4 rounded-lg shadow-sm border mb-4">
+                <h3 className="text-base font-medium mb-3">Advanced Filters</h3>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Brand</label>
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="All Brands" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Brands</SelectItem>
+                        <SelectItem value="samsung">Samsung</SelectItem>
+                        <SelectItem value="apple">Apple</SelectItem>
+                        <SelectItem value="sony">Sony</SelectItem>
+                        <SelectItem value="lg">LG</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Condition</label>
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Any Condition" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Any Condition</SelectItem>
+                        <SelectItem value="new">New</SelectItem>
+                        <SelectItem value="used">Used</SelectItem>
+                        <SelectItem value="refurbished">Refurbished</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Shipping</label>
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="All Options" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Options</SelectItem>
+                        <SelectItem value="free">Free Shipping</SelectItem>
+                        <SelectItem value="express">Express Shipping</SelectItem>
+                        <SelectItem value="local">Local Pickup</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Availability</label>
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Any" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Any</SelectItem>
+                        <SelectItem value="in-stock">In Stock</SelectItem>
+                        <SelectItem value="out-of-stock">Out of Stock</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="flex justify-end mt-4">
+                  <Button 
+                    variant="outline" 
+                    className="mr-2"
+                    onClick={() => setMoreFiltersOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={() => setMoreFiltersOpen(false)}>
+                    Apply Filters
+                  </Button>
+                </div>
+              </div>
+            )}
             
             {/* Products Grid */}
             {currentProducts.length > 0 ? (
@@ -203,13 +319,36 @@ const ProductsPage = () => {
               </div>
             )}
             
-            {/* Pagination */}
+            {/* Pagination with Items Per Page Selector */}
             {filteredProducts.length > 0 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+              <div className="mt-6">
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-2">
+                  <div className="flex items-center mb-4 sm:mb-0">
+                    <span className="text-sm text-gray-600 mr-2">Items per page:</span>
+                    <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
+                      <SelectTrigger className="w-16">
+                        <SelectValue placeholder="12" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="6">6</SelectItem>
+                        <SelectItem value="12">12</SelectItem>
+                        <SelectItem value="24">24</SelectItem>
+                        <SelectItem value="48">48</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="text-sm text-gray-600">
+                    Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} products
+                  </div>
+                </div>
+                
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             )}
           </div>
         </div>

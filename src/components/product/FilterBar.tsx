@@ -31,9 +31,10 @@ export interface FilterOptions {
 interface FilterBarProps {
   filters: FilterOptions;
   onFilterChange: (key: keyof FilterOptions, value: string) => void;
+  onMoreFiltersClick?: () => void;
 }
 
-const FilterBar = ({ filters, onFilterChange }: FilterBarProps) => {
+const FilterBar = ({ filters, onFilterChange, onMoreFiltersClick }: FilterBarProps) => {
   const isMobile = useIsMobile();
 
   const handleSortChange = (value: string) => {
@@ -148,7 +149,12 @@ const FilterBar = ({ filters, onFilterChange }: FilterBarProps) => {
 
         {/* Advanced Filters Button */}
         {!isMobile && (
-          <Button variant="outline" size="sm" className="h-9">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-9"
+            onClick={onMoreFiltersClick}
+          >
             <SlidersHorizontal size={16} className="mr-2" />
             <span className="text-sm">More Filters</span>
           </Button>

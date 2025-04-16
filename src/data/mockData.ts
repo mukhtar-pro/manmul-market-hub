@@ -19,7 +19,23 @@ export const products = Array.from({ length: 60 }, (_, i) => ({
     "Cotton Bed Sheets",
     "Fitness Activity Tracker",
   ][i % 15],
-  image: `/placeholder.svg`,
+  image: [
+    "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // earbuds
+    "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // tv
+    "https://images.unsplash.com/photo-1581655353564-df123a1eb820?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // t-shirt
+    "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // yoga leggings
+    "https://images.unsplash.com/photo-1593618656894-100eb9b551c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // knife set
+    "https://images.unsplash.com/photo-1559525839-55fdb54e81d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // coffee beans
+    "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // gaming mouse
+    "https://images.unsplash.com/photo-1594248356692-ed114ae30f56?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // cutting board
+    "https://images.unsplash.com/photo-1608571423539-e951a27585f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // oil diffuser
+    "https://images.unsplash.com/photo-1602702123311-bccacb2a3084?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // plant pot
+    "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // bluetooth speaker
+    "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // face cream
+    "https://images.unsplash.com/photo-1610465299993-e6675c9f9efa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // laptop stand
+    "https://images.unsplash.com/photo-1631887071901-a87e7b6fb38d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // bed sheets
+    "https://images.unsplash.com/photo-1576243345690-4e4b79b63288?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // fitness tracker
+  ][i % 15],
   price: Math.floor(Math.random() * 200) + 10,
   rating: (Math.random() * 3 + 2).toFixed(1),
   upvotes: Math.floor(Math.random() * 1000),
@@ -43,7 +59,18 @@ export const shops = Array.from({ length: 20 }, (_, i) => ({
     "Garden World",
     "Kids Wonderland",
   ][i % 10],
-  avatar: `/placeholder.svg`,
+  avatar: [
+    "https://images.unsplash.com/photo-1472851294608-062f824d29cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // tech store
+    "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // fashion
+    "https://images.unsplash.com/photo-1584771145729-0bd9fda6529b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // home
+    "https://images.unsplash.com/photo-1556911220-bff31c812dba?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // kitchen
+    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // beauty
+    "https://images.unsplash.com/photo-1615719413546-198b25453f85?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // sports
+    "https://images.unsplash.com/photo-1526243741027-444d633d7365?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // books
+    "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // pet supplies
+    "https://images.unsplash.com/photo-1527324688151-0e627063f2b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // garden
+    "https://images.unsplash.com/photo-1642984061426-3cdee2629e63?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // kids
+  ][i % 10],
   address: `${Math.floor(Math.random() * 100) + 1} Main St, Sydney, Australia`,
   city: ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide"][Math.floor(Math.random() * 5)],
   productCount: Math.floor(Math.random() * 100) + 10,
@@ -67,7 +94,18 @@ export const medicines = Array.from({ length: 30 }, (_, i) => ({
     "Cold & Flu Tablets",
     "Digestive Health Capsules"
   ][i % 10],
-  image: `/placeholder.svg`,
+  image: [
+    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // paracetamol
+    "https://images.unsplash.com/photo-1626716893600-936c621b8fdb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // ibuprofen
+    "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // vitamin C
+    "https://images.unsplash.com/photo-1631374190925-e7583657060c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // allergy
+    "https://images.unsplash.com/photo-1607006946971-d8a01b0b8150?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // cough syrup
+    "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // multivitamin
+    "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // calcium
+    "https://images.unsplash.com/photo-1583241739086-1106b8be565b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // antiseptic cream
+    "https://images.unsplash.com/photo-1600954268372-b291d362d035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80", // cold & flu
+    "https://images.unsplash.com/photo-1587854680352-936b22b91030?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"  // digestive health
+  ][i % 10],
   price: Math.floor(Math.random() * 30) + 5,
   description: "High-quality healthcare product for your wellbeing. Always read the label and follow the instructions.",
   category: ["Pain Relief", "Vitamins", "Cold & Flu", "First Aid", "Digestive Health"][Math.floor(Math.random() * 5)],
@@ -95,7 +133,7 @@ export const user = {
   id: "user-1",
   name: "Jane Smith",
   email: "jane.smith@example.com",
-  avatar: `/placeholder.svg`,
+  avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   address: "123 Main St, Sydney NSW 2000, Australia",
   phoneNumber: "+61 2 1234 5678",
   balance: 250.75,

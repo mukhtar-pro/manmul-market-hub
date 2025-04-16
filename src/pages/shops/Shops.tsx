@@ -16,7 +16,7 @@ import { MapPin } from "lucide-react";
 const ShopsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCity, setSelectedCity] = useState<string>("all");
-  const shopsPerPage = 6;
+  const [itemsPerPage, setItemsPerPage] = useState(6);
   
   // Filter shops by city
   const filteredShops = selectedCity === "all" 
@@ -27,10 +27,10 @@ const ShopsPage = () => {
   const cities = Array.from(new Set(shops.map(shop => shop.city)));
   
   // Calculate shops for the current page
-  const indexOfLastShop = currentPage * shopsPerPage;
-  const indexOfFirstShop = indexOfLastShop - shopsPerPage;
+  const indexOfLastShop = currentPage * itemsPerPage;
+  const indexOfFirstShop = indexOfLastShop - itemsPerPage;
   const currentShops = filteredShops.slice(indexOfFirstShop, indexOfLastShop);
-  const totalPages = Math.ceil(filteredShops.length / shopsPerPage);
+  const totalPages = Math.ceil(filteredShops.length / itemsPerPage);
   
   // Handle page change
   const handlePageChange = (pageNumber: number) => {
@@ -42,6 +42,12 @@ const ShopsPage = () => {
   const handleCityChange = (value: string) => {
     setSelectedCity(value);
     setCurrentPage(1); // Reset to first page when changing city
+  };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1);
   };
 
   return (
@@ -94,13 +100,36 @@ const ShopsPage = () => {
           </div>
         )}
         
-        {/* Pagination */}
-        {filteredShops.length > shopsPerPage && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+        {/* Pagination with Items Per Page Selector */}
+        {filteredShops.length > 0 && (
+          <div className="mt-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+              <div className="flex items-center mb-4 sm:mb-0">
+                <span className="text-sm text-gray-600 mr-2">Items per page:</span>
+                <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
+                  <SelectTrigger className="w-16">
+                    <SelectValue placeholder="6" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="6">6</SelectItem>
+                    <SelectItem value="9">9</SelectItem>
+                    <SelectItem value="12">12</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="text-sm text-gray-600">
+                Showing {indexOfFirstShop + 1}-{Math.min(indexOfLastShop, filteredShops.length)} of {filteredShops.length} shops
+              </div>
+            </div>
+            
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
         )}
       </div>
     </MainLayout>

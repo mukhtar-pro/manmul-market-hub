@@ -1,5 +1,5 @@
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { toast } from "@/components/ui/use-toast";
 
 // Define the types for our cart items and context
@@ -37,6 +37,24 @@ export const useCart = () => {
 // Provider component
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+
+  // Load items from localStorage when component mounts
+  useEffect(() => {
+    const savedItems = localStorage.getItem('cartItems');
+    if (savedItems) {
+      try {
+        setItems(JSON.parse(savedItems));
+      } catch (error) {
+        console.error('Error parsing saved cart items:', error);
+        localStorage.removeItem('cartItems');
+      }
+    }
+  }, []);
+
+  // Save items to localStorage whenever items change
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(items));
+  }, [items]);
 
   // Add item to cart
   const addItem = (item: Omit<CartItem, 'quantity'>, quantity: number) => {

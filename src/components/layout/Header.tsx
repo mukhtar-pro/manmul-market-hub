@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Search, 
   ShoppingCart, 
@@ -24,9 +24,19 @@ import { useCart } from "@/contexts/CartContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const isMobile = useIsMobile();
   const { getTotalItems } = useCart();
   const cartItemCount = getTotalItems();
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // In a real app, you would navigate to a search results page with the query
+      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -49,20 +59,25 @@ const Header = () => {
           {/* Search bar - Hide on mobile */}
           {!isMobile && (
             <div className="flex-1 max-w-xl mx-4">
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="Search products, shops, and more..."
-                  className="w-full py-2 pl-4 pr-12 bg-gray-100"
-                />
-                <Button 
-                  size="icon"
-                  variant="ghost" 
-                  className="absolute right-0 top-0 h-full"
-                >
-                  <Search size={18} />
-                </Button>
-              </div>
+              <form onSubmit={handleSearch}>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    placeholder="Search products, shops, and more..."
+                    className="w-full py-2 pl-4 pr-12 bg-gray-100"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Button 
+                    type="submit"
+                    size="icon"
+                    variant="ghost" 
+                    className="absolute right-0 top-0 h-full"
+                  >
+                    <Search size={18} />
+                  </Button>
+                </div>
+              </form>
             </div>
           )}
 
@@ -121,20 +136,25 @@ const Header = () => {
         {/* Mobile search bar - Only show on mobile */}
         {isMobile && (
           <div className="mt-3">
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Search..."
-                className="w-full py-2 pl-4 pr-12 bg-gray-100"
-              />
-              <Button 
-                size="icon"
-                variant="ghost" 
-                className="absolute right-0 top-0 h-full"
-              >
-                <Search size={18} />
-              </Button>
-            </div>
+            <form onSubmit={handleSearch}>
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full py-2 pl-4 pr-12 bg-gray-100"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Button 
+                  type="submit"
+                  size="icon"
+                  variant="ghost" 
+                  className="absolute right-0 top-0 h-full"
+                >
+                  <Search size={18} />
+                </Button>
+              </div>
+            </form>
           </div>
         )}
       </div>

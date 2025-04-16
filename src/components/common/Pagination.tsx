@@ -54,7 +54,7 @@ const Pagination = ({
   };
 
   return (
-    <div className="flex justify-center items-center space-x-1 mt-6">
+    <div className="flex justify-center items-center space-x-1 mt-2">
       <Button
         variant="outline"
         size="icon"
