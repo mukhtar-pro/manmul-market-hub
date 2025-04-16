@@ -49,13 +49,15 @@ interface FilterBarProps {
   onFilterChange: (key: keyof FilterOptions, value: any) => void;
   activeFilters?: string[];
   onRemoveFilter?: (filter: string) => void;
+  onMoreFiltersClick?: () => void;
 }
 
 const FilterBar = ({ 
   filters, 
   onFilterChange, 
   activeFilters = [],
-  onRemoveFilter = () => {}
+  onRemoveFilter = () => {},
+  onMoreFiltersClick
 }: FilterBarProps) => {
   const isMobile = useIsMobile();
   const [brandOptions, setBrandOptions] = useState<string[]>(filters.brand || []);
@@ -211,6 +213,7 @@ const FilterBar = ({
                 variant="outline" 
                 size="sm" 
                 className="h-9"
+                onClick={() => onMoreFiltersClick && onMoreFiltersClick()}
               >
                 <SlidersHorizontal size={16} className="mr-2" />
                 <span className="text-sm">More Filters</span>

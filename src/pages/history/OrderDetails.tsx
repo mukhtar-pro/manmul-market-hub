@@ -214,15 +214,7 @@ const OrderDetails = () => {
                   <div key={item.id}>
                     <div className="flex items-start">
                       <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center mr-4">
-                        {item.image ? (
-                          <img 
-                            src={item.image} 
-                            alt={item.name} 
-                            className="w-full h-full object-contain" 
-                          />
-                        ) : (
-                          <Package size={24} className="text-gray-400" />
-                        )}
+                        <Package size={24} className="text-gray-400" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-medium">{item.name}</h3>

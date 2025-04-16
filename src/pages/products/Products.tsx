@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import CategorySidebar from "@/components/product/CategorySidebar";
@@ -37,14 +36,11 @@ const ProductsPage = () => {
   
   const isMobile = useIsMobile();
   
-  // Filter products by category
   const filterByCategory = (products: any[]) => {
     if (!selectedCategory) return products;
     return products.filter(product => {
-      // Check if the product's category matches the selectedCategory or if it's a parent category
       if (product.category === selectedCategory) return true;
       
-      // This is a simplified approach; in a real app, you'd have a proper category hierarchy
       const parentCategories: Record<string, string[]> = {
         "Electronics": ["smartphones", "laptops", "audio"],
         "Fashion": ["men", "women", "kids"],
@@ -57,7 +53,6 @@ const ProductsPage = () => {
     });
   };
   
-  // Filter products by price range
   const filterByPriceRange = (products: any[]) => {
     switch (filters.priceRange) {
       case "under25":
@@ -73,7 +68,6 @@ const ProductsPage = () => {
     }
   };
   
-  // Filter products by rating
   const filterByRating = (products: any[]) => {
     switch (filters.rating) {
       case "4plus":
@@ -89,7 +83,6 @@ const ProductsPage = () => {
     }
   };
   
-  // Sort products
   const sortProducts = (products: any[]) => {
     switch (filters.sortBy) {
       case "price-low":
@@ -105,7 +98,6 @@ const ProductsPage = () => {
     }
   };
   
-  // Apply all filters
   const filteredProducts = sortProducts(
     filterByRating(
       filterByPriceRange(
@@ -114,42 +106,35 @@ const ProductsPage = () => {
     )
   );
   
-  // Calculate products for the current page
   const indexOfLastProduct = currentPage * itemsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-  // Handle page change
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   
-  // Handle category selection
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
-    setCurrentPage(1); // Reset to first page when changing category
+    setCurrentPage(1);
   };
   
-  // Handle filter changes
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1); // Reset to first page when changing filters
+    setCurrentPage(1);
   };
 
-  // Handle items per page change
   const handleItemsPerPageChange = (value: string) => {
     setItemsPerPage(Number(value));
-    setCurrentPage(1); // Reset to first page when changing items per page
+    setCurrentPage(1);
   };
   
-  // Handle more filters click
   const handleMoreFiltersClick = () => {
     setMoreFiltersOpen(!moreFiltersOpen);
   };
   
-  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory, filters, itemsPerPage]);
@@ -160,7 +145,6 @@ const ProductsPage = () => {
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Browse Products</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Category Sidebar - Hidden on mobile */}
           {!isMobile ? (
             <div className="col-span-1">
               <CategorySidebar 
@@ -193,16 +177,13 @@ const ProductsPage = () => {
             </Sheet>
           )}
           
-          {/* Main Content */}
           <div className="col-span-1 md:col-span-3">
-            {/* Filter Bar */}
             <FilterBar 
               filters={filters}
               onFilterChange={handleFilterChange}
               onMoreFiltersClick={handleMoreFiltersClick}
             />
             
-            {/* Advanced Filters Dialog - Only shown when More Filters is clicked */}
             {moreFiltersOpen && (
               <div className="bg-white p-4 rounded-lg shadow-sm border mb-4">
                 <h3 className="text-base font-medium mb-3">Advanced Filters</h3>
@@ -284,7 +265,6 @@ const ProductsPage = () => {
               </div>
             )}
             
-            {/* Products Grid */}
             {currentProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {currentProducts.map((product) => (
@@ -319,7 +299,6 @@ const ProductsPage = () => {
               </div>
             )}
             
-            {/* Pagination with Items Per Page Selector */}
             {filteredProducts.length > 0 && (
               <div className="mt-6">
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-2">
