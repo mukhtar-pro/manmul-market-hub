@@ -26,7 +26,7 @@ const TopbarItem = ({ to, icon, label, isActive, badgeCount }: TopbarItemProps) 
     <Link 
       to={to}
       className={cn(
-        "flex flex-col items-center px-4 py-2 text-sm font-medium transition-colors relative",
+        "flex flex-col items-center px-6 py-4 text-sm font-medium transition-colors relative", // Increased px from 4 to 6, py from 2 to 4
         isActive 
           ? "text-manmul-600 border-b-2 border-manmul-600" 
           : "text-gray-600 hover:text-manmul-500"
