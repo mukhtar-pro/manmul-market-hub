@@ -18,6 +18,7 @@ import HealthcarePage from "@/pages/healthcare/Healthcare";
 import MedicineDetail from "@/pages/healthcare/MedicineDetail";
 import CartPage from "@/pages/cart/Cart";
 import HistoryPage from "@/pages/history/History";
+import OrderDetails from "@/pages/history/OrderDetails";
 import ProfilePage from "@/pages/profile/Profile";
 import SettingsPage from "@/pages/settings/Settings";
 import NotFound from "@/pages/NotFound";
@@ -41,6 +42,7 @@ const App = () => (
                 <Route path="/healthcare/:id" element={<MedicineDetail />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/history" element={<HistoryPage />} />
+                <Route path="/order-details/:id" element={<OrderDetails />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<NotFound />} />

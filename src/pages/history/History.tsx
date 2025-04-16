@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -15,6 +16,7 @@ import { format } from "date-fns";
 import Pagination from "@/components/common/Pagination";
 
 const HistoryPage = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -132,7 +134,13 @@ const HistoryPage = () => {
                   </div>
                   
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm">View Details</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => navigate(`/order-details/${order.id}`)}
+                    >
+                      View Details
+                    </Button>
                     <Button variant="outline" size="sm">Track Order</Button>
                     <Button variant="outline" size="sm">Buy Again</Button>
                   </div>

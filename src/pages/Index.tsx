@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { products } from "@/data/mockData";
 import ProductCard from "@/components/product/ProductCard";
+import HomeCarousel from "@/components/home/HomeCarousel";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -42,12 +43,18 @@ const Index = () => {
             </div>
             <div className="md:w-1/2 flex justify-center md:justify-end">
               <img 
-                src="/placeholder.svg" 
-                alt="Shopping Illustration" 
+                src="/lovable-uploads/845c676e-9a0a-4fd5-81e1-0fe046b78a3a.png" 
+                alt="ManMulShop Logo" 
                 className="max-w-full max-h-72 object-contain"
               />
             </div>
           </div>
+        </div>
+        
+        {/* Carousel Section */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Featured Promotions</h2>
+          <HomeCarousel />
         </div>
         
         {/* Categories Section */}
@@ -117,7 +124,7 @@ const Index = () => {
                 key={product.id}
                 id={product.id}
                 name={product.name}
-                image={product.image}
+                image={product.image || "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=2080&auto=format&fit=crop"}
                 price={product.price}
                 rating={Number(product.rating)}
                 upvotes={product.upvotes}

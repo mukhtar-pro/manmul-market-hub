@@ -44,9 +44,9 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 flex items-center justify-center">
+            <div className="w-12 h-12 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/63051921-1b43-4498-97a1-524eec3adbb8.png" 
+                src="/lovable-uploads/845c676e-9a0a-4fd5-81e1-0fe046b78a3a.png" 
                 alt="ManMulShop Logo" 
                 className="w-full h-full object-contain"
               />
