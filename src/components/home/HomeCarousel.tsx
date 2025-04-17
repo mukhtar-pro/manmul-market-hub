@@ -37,18 +37,28 @@ const carouselItems = [
 ];
 
 const HomeCarousel = () => {
-  // Auto-slide functionality
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+
   useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+
+    // Auto-slide functionality
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 5000); // Change slide every 5 seconds
-    
-    return () => clearInterval(interval);
-  }, []);
+      api.scrollNext();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      api.off("select", () => {});
+    };
+  }, [api]);
 
   return (
     <Carousel 
@@ -57,6 +67,7 @@ const HomeCarousel = () => {
         align: "start",
         loop: true,
       }}
+      setApi={setApi}
     >
       <CarouselContent>
         {carouselItems.map((item) => (
@@ -69,25 +80,13 @@ const HomeCarousel = () => {
                 className="w-full h-full object-cover" 
               />
               
-              {/* Content Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex flex-col justify-center p-8 text-white">
+              {/* Content Overlay - Centered */}
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-8 text-center text-white">
                 <h2 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h2>
                 <p className="text-sm md:text-base mb-4 max-w-md">{item.description}</p>
-                <button className="bg-white text-black hover:bg-gray-200 transition-colors w-fit py-2 px-4 rounded-md font-medium">
+                <button className="bg-white text-black hover:bg-gray-200 transition-colors py-2 px-4 rounded-md font-medium">
                   Shop Now
                 </button>
-              </div>
-              
-              {/* Indicator dots */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                {carouselItems.map((_, index) => (
-                  <div 
-                    key={index}
-                    className={`w-2 h-2 rounded-full ${
-                      currentIndex === index ? "bg-white" : "bg-white/50"
-                    }`}
-                  ></div>
-                ))}
               </div>
             </div>
           </CarouselItem>
@@ -96,6 +95,19 @@ const HomeCarousel = () => {
       
       <CarouselPrevious className="left-4" />
       <CarouselNext className="right-4" />
+      
+      {/* Dots */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {carouselItems.map((_, index) => (
+          <button
+            key={index}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              current === index ? "bg-white" : "bg-white/50"
+            }`}
+            onClick={() => api?.scrollTo(index)}
+          />
+        ))}
+      </div>
     </Carousel>
   );
 };

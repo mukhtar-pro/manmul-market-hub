@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
@@ -46,7 +45,7 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-12 h-12 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/845c676e-9a0a-4fd5-81e1-0fe046b78a3a.png" 
+                src="/lovable-uploads/e8db514f-a94a-4e31-b61e-4cee782051f1.png" 
                 alt="ManMulShop Logo" 
                 className="w-full h-full object-contain"
               />
