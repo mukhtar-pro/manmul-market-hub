@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   Carousel,
@@ -5,8 +6,8 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi
 } from "@/components/ui/carousel";
-import { type CarouselApi } from "@/components/ui/carousel";
 
 // Define carousel items
 const carouselItems = [
