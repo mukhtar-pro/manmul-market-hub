@@ -12,12 +12,12 @@ const Footer = () => {
               <div className="w-12 h-12 flex items-center justify-center">
                 <img 
                   src="/lovable-uploads/e8db514f-a94a-4e31-b61e-4cee782051f1.png" 
-                  alt="ManMulShop Logo" 
+                  alt="Manmulshop Logo" 
                   className="w-full h-full object-contain"
                 />
               </div>
               <span className="ml-2 text-lg font-semibold text-gray-800">
-                ManMulShop
+                Manmulshop
               </span>
             </Link>
             <p className="text-sm text-gray-600 mt-2">
@@ -26,7 +26,7 @@ const Footer = () => {
           </div>
           
           <div className="text-sm text-gray-600">
-            <p>&copy; {currentYear} ManMulShop. All rights reserved.</p>
+            <p>&copy; {currentYear} Manmulshop. All rights reserved.</p>
           </div>
         </div>
         

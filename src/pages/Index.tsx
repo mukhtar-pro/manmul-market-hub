@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -23,14 +22,14 @@ const Index = () => {
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-manmul-100 to-green-50 rounded-lg p-8 mb-12">
           <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 mb-6 md:mb-0">
+            <div className="w-full text-center">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-                Welcome to ManMulShop
+                Welcome to Manmulshop
               </h1>
               <p className="text-lg text-gray-600 mb-6">
                 Your one-stop destination for all your shopping needs. Browse through our wide range of products and find exactly what you're looking for.
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 justify-center">
                 <Button size="lg" onClick={() => navigate("/products")}>
                   <ShoppingBag size={18} className="mr-2" />
                   Shop Now
@@ -40,13 +39,6 @@ const Index = () => {
                   Find Shops
                 </Button>
               </div>
-            </div>
-            <div className="md:w-1/2 flex justify-center md:justify-end">
-              <img 
-                src="/lovable-uploads/845c676e-9a0a-4fd5-81e1-0fe046b78a3a.png" 
-                alt="ManMulShop Logo" 
-                className="max-w-full max-h-72 object-contain"
-              />
             </div>
           </div>
         </div>

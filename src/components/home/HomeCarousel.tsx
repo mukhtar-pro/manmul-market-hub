@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   Carousel,
@@ -7,6 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { type CarouselApi } from "@/components/ui/carousel";
 
 // Define carousel items
 const carouselItems = [
@@ -73,17 +73,15 @@ const HomeCarousel = () => {
         {carouselItems.map((item) => (
           <CarouselItem key={item.id}>
             <div className="relative h-[300px] md:h-[400px] w-full">
-              {/* Image */}
               <img 
                 src={item.image} 
                 alt={item.title} 
                 className="w-full h-full object-cover" 
               />
               
-              {/* Content Overlay - Centered */}
-              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-8 text-center text-white">
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center text-white px-4">
                 <h2 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h2>
-                <p className="text-sm md:text-base mb-4 max-w-md">{item.description}</p>
+                <p className="text-sm md:text-base mb-4">{item.description}</p>
                 <button className="bg-white text-black hover:bg-gray-200 transition-colors py-2 px-4 rounded-md font-medium">
                   Shop Now
                 </button>
@@ -96,7 +94,6 @@ const HomeCarousel = () => {
       <CarouselPrevious className="left-4" />
       <CarouselNext className="right-4" />
       
-      {/* Dots */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
         {carouselItems.map((_, index) => (
           <button

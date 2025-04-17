@@ -46,12 +46,12 @@ const Header = () => {
             <div className="w-12 h-12 flex items-center justify-center">
               <img 
                 src="/lovable-uploads/e8db514f-a94a-4e31-b61e-4cee782051f1.png" 
-                alt="ManMulShop Logo" 
+                alt="Manmulshop Logo" 
                 className="w-full h-full object-contain"
               />
             </div>
             {!isMobile && (
-              <span className="text-xl font-bold text-gray-800">ManMulShop</span>
+              <span className="text-xl font-bold text-gray-800">Manmulshop</span>
             )}
           </Link>
 
