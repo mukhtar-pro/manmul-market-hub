@@ -46,7 +46,7 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-12 h-12 flex items-center justify-center">
               <img 
-                src="/lovable-uploads/865485b6-0ceb-4a9a-8829-0d6481d92809.png" 
+                src="/manmul-uploads/865485b6-0ceb-4a9a-8829-0d6481d92809.png" 
                 alt="Manmulshop Logo" 
                 className="w-full h-full object-contain"
               />
