@@ -20,6 +20,7 @@ export interface MedicineProps {
   description: string;
   inStock: boolean;
   requiresPrescription: boolean;
+  onAddToCart?: () => void;
 }
 
 const MedicineCard = ({
@@ -30,6 +31,7 @@ const MedicineCard = ({
   category,
   inStock,
   requiresPrescription,
+  onAddToCart
 }: MedicineProps) => {
   const { toast } = useToast();
 
@@ -50,6 +52,11 @@ const MedicineCard = ({
         description: `${name} has been added to your cart.`,
         duration: 3000,
       });
+      
+      // Call the onAddToCart prop if provided
+      if (onAddToCart) {
+        onAddToCart();
+      }
     }
   };
 

@@ -18,6 +18,7 @@ export interface ProductProps {
   rating: number;
   upvotes: number;
   stock?: number;
+  onAddToCart?: () => void;
 }
 
 const ProductCard = ({ 
@@ -26,7 +27,8 @@ const ProductCard = ({
   image, 
   price, 
   rating, 
-  upvotes 
+  upvotes,
+  onAddToCart
 }: ProductProps) => {
   const { toast } = useToast();
 
@@ -39,6 +41,11 @@ const ProductCard = ({
       description: `${name} has been added to your cart.`,
       duration: 3000,
     });
+
+    // Call the onAddToCart prop if provided
+    if (onAddToCart) {
+      onAddToCart();
+    }
   };
 
   return (
