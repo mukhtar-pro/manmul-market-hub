@@ -11,7 +11,7 @@ const Footer = () => {
             <Link to="/" className="flex items-center">
               <div className="w-12 h-12 flex items-center justify-center">
                 <img 
-                  src="/lovable-uploads/e8db514f-a94a-4e31-b61e-4cee782051f1.png" 
+                  src="/lovable-uploads/865485b6-0ceb-4a9a-8829-0d6481d92809.png" 
                   alt="Manmulshop Logo" 
                   className="w-full h-full object-contain"
                 />
