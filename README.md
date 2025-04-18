@@ -43,10 +43,11 @@ Welcome to **manmulshop**, a powerful and modern online shopping platform design
   - React
   - TypeScript
   - Vite
-  - Material UI
+  - Radix UI
   - Tailwind CSS
-  - React Query
-  - Joi (for validation)
+  - React Hook Form
+  - Zod (for validation)
+  - Supabase
 
 ---
 
